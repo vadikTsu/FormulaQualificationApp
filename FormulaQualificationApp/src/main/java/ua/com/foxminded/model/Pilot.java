@@ -28,16 +28,4 @@ public class Pilot {
     public String toString() {
         return String.format("%s|%s|%s", getAbbreviation(), getRacerName(), getTeamName());
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Pilot other = (Pilot) obj;
-        if (getAbbreviation() != other.getAbbreviation())
-            return false;
-        return true;
-    }
 }
