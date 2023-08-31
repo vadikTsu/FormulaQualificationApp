@@ -1,15 +1,17 @@
 package ua.com.foxminded.model;
 
+import java.time.Duration;
+
 public class Racer {
 
     private String teamName;
-    private String racerName;
+    private String name;
     private String abbreviation;
-    private String lapTime;
+    private Duration lapTime;
 
-    public Racer(String abbreviation, String racerName, String teamName) {
+    public Racer(String abbreviation, String name, String teamName) {
         this.teamName = teamName;
-        this.racerName = racerName;
+        this.name = name;
         this.abbreviation = abbreviation;
     }
 
@@ -17,24 +19,19 @@ public class Racer {
         return teamName;
     }
 
-    public String getRacerName() {
-        return racerName;
+    public String getName() {
+        return name;
     }
 
     public String getAbbreviation() {
         return abbreviation;
     }
 
-    public String getLapTime() {
+    public Duration getLapTime() {
         return lapTime;
     }
 
-    public void setLapTime(String lapTime) {
+    public void setLapTime(Duration lapTime) {
         this.lapTime = lapTime;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%-8s %-20s %-25s %s", getAbbreviation(), getRacerName(), getTeamName(), getLapTime());
     }
 }

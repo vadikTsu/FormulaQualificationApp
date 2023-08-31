@@ -13,20 +13,24 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import ua.com.foxminded.dao.RaceDataAccess;
+import ua.com.foxminded.dao.FileReader;
 import ua.com.foxminded.model.Racer;
 
 public class RacerService {
 
+    private static final Pattern LOG_FILE_FORMAT = Pattern.compile("\\w{3}\\d{4}-\\d{2}-\\d{2}_\\d{2}:\\d{2}:\\d{2}\\.\\d{3}");
+    private static final Pattern ABBREVIATION_FILE_FORMAT = Pattern.compile("[A-Z]{3}_[A-Za-z\\s]+_[A-Za-z\\s]+");
+    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss.SSS");
+
     public List<Racer> getRacers(String startLogFileName, String endLogFileName, String abbreviationsFileName)
             throws IOException {
-        try (Stream<String> abbreviations = RaceDataAccess.getTextStream(abbreviationsFileName)) {
-            List<Racer> racers = abbreviations
-                    .map(validateAbbreviationSource)
-                    .map(setUpPilotProfile)
+        try (Stream<String> abbreviations = new FileReader().read(abbreviationsFileName)) {
+            List<Racer> racers = abbreviations.map(validateAbbreviationSource).map(setUpPilotProfile)
                     .collect(Collectors.toList());
-            Map<String, String> racersLapTimes = parseLogsToLapTimes(startLogFileName, endLogFileName);
-            racers.stream().forEach(racer -> racer.setLapTime(racersLapTimes.get(racer.getAbbreviation())));
+            Map<String, LocalDateTime> racersStartLogs = parseLogsToLapTimes(startLogFileName);
+            Map<String, LocalDateTime> racersEndLogs = parseLogsToLapTimes(endLogFileName);
+            racers.stream().forEach(racer -> racer.setLapTime(findLapTimeFromStartEndLogData
+                    .apply(racersStartLogs.get(racer.getAbbreviation()), racersEndLogs.get(racer.getAbbreviation()))));
             return racers;
         }
     }
@@ -36,40 +40,31 @@ public class RacerService {
         return new Racer(pilotsProperies[0], pilotsProperies[1], pilotsProperies[2]);
     };
 
-    private Function<String, String> validateAbbreviationSource = log -> {
-        Pattern fileFormatPattern = Pattern.compile("[A-Z]{3}_[A-Za-z\\s]+_[A-Za-z\\s]+");
-        if (fileFormatPattern.matcher(log).matches()) {
-            return log;
+    private Function<String, String> validateAbbreviationSource = abbreviation -> {
+        if (ABBREVIATION_FILE_FORMAT.matcher(abbreviation).matches()) {
+            return abbreviation;
         } else {
             throw new RuntimeException("Invalid abbreviation source!");
         }
     };
 
-    private Map<String, String> parseLogsToLapTimes(String startLogFileName, String endLogFileName) throws IOException {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss.SSS");
-        try (Stream<String> startData = RaceDataAccess.getTextStream(startLogFileName);
-                Stream<String> endData = RaceDataAccess.getTextStream(endLogFileName)) {
-            return Stream.concat(startData, endData).map(validateLogSource)
-                    .collect(toMap(log -> log.substring(0, 3), log -> log.substring(3),
-                            (timeLogStart, timeLogEnd) -> findLapTimeFromStartEndLogData.apply(
-                                    LocalDateTime.parse(timeLogStart, dateTimeFormatter),
-                                    LocalDateTime.parse(timeLogEnd, dateTimeFormatter))));
+    private Map<String, LocalDateTime> parseLogsToLapTimes(String logFileName) throws IOException {
+        try (Stream<String> logData = new FileReader().read(logFileName)) {
+            return logData.map(validateLogSource).collect(toMap(log -> log.substring(0, 3),
+                    log -> LocalDateTime.parse(log.substring(3), DATE_TIME_FORMAT), (existingValue, newValue) -> {
+                        throw new RuntimeException("Duplicate log: " + logFileName);
+                    }));
         }
     }
 
     private Function<String, String> validateLogSource = log -> {
-        Pattern fileFormatPattern = Pattern.compile("\\w{3}\\d{4}-\\d{2}-\\d{2}_\\d{2}:\\d{2}:\\d{2}\\.\\d{3}");
-        if (fileFormatPattern.matcher(log).matches()) {
+        if (LOG_FILE_FORMAT.matcher(log).matches()) {
             return log;
         } else {
             throw new RuntimeException("Invalid log source!");
         }
     };
 
-    private BiFunction<LocalDateTime, LocalDateTime, String> findLapTimeFromStartEndLogData = (timeLogStart,
-            timeLogEnd) -> {
-        Duration duration = Duration.between(timeLogStart, timeLogEnd).abs();
-        return String.format("%02d:%02d.%03d%n", duration.toMinutes() % 60, duration.getSeconds() % 60,
-                duration.toMillis() % 1000);
-    };
+    private BiFunction<LocalDateTime, LocalDateTime, Duration> findLapTimeFromStartEndLogData = 
+            (timeLogStart, timeLogEnd) -> Duration.between(timeLogStart, timeLogEnd).abs();
 }

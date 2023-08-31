@@ -6,7 +6,6 @@ import java.io.IOException;
 
 
 public class Main {
-    
     public static void main(String[] args) {
         RacerService raceService = new RacerService();
         RaceDispaly raceDispaly = new RaceDispaly();
@@ -15,9 +14,6 @@ public class Main {
         } catch (IOException ioException) {
             System.err.print(ioException.getMessage());
             ioException.printStackTrace();
-        } catch (RuntimeException runtimeException) {
-            System.err.print(runtimeException.getMessage());
-            runtimeException.printStackTrace();
         }
     }
 }
