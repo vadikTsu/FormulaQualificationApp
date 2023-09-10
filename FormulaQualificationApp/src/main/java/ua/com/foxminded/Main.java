@@ -5,6 +5,7 @@ import ua.com.foxminded.qualification.RacerService;
 import java.io.IOException;
 
 public class Main {
+
     public static void main(String[] args) {
         RacerService raceService = new RacerService();
         RaceDispaly raceDispaly = new RaceDispaly();

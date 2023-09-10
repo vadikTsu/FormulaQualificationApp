@@ -10,11 +10,10 @@ import java.util.stream.Stream;
 public class FileReader {
 
     public Stream<String> read(String fileName) throws IOException {
-        ClassLoader classLoader = FileReader.class.getClassLoader();
+        ClassLoader classLoader = getClass().getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream(fileName);
         if (inputStream != null) {
-            Stream<String> lines = new BufferedReader(new InputStreamReader(inputStream)).lines();
-            return lines;
+            return new BufferedReader(new InputStreamReader(inputStream)).lines();
         } else {
             throw new FileNotFoundException("No such file: " + fileName);
         }
