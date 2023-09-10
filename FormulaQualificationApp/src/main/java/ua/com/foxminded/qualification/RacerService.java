@@ -37,7 +37,7 @@ public class RacerService {
 
     private Function<String, Racer> setUpPilotProfile = pilotsProfile -> {
         String[] pilotsProperies = pilotsProfile.split("_");
-        return new Racer(pilotsProperies[0], pilotsProperies[1], pilotsProperies[2]);
+        return new Racer(pilotsProperies[0], pilotsProperies[1], pilotsProperies[2], null);
     };
 
     private Function<String, String> validateAbbreviationSource = abbreviation -> {
@@ -65,6 +65,6 @@ public class RacerService {
         }
     };
 
-    private BiFunction<LocalDateTime, LocalDateTime, Duration> findLapTimeFromStartEndLogData = 
+    private BiFunction<LocalDateTime, LocalDateTime, Duration> findLapTimeFromStartEndLogData =
             (timeLogStart, timeLogEnd) -> Duration.between(timeLogStart, timeLogEnd).abs();
 }

@@ -1,6 +1,7 @@
 package ua.com.foxminded.model;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class Racer {
 
@@ -9,10 +10,11 @@ public class Racer {
     private String abbreviation;
     private Duration lapTime;
 
-    public Racer(String abbreviation, String name, String teamName) {
-        this.teamName = teamName;
-        this.name = name;
+    public Racer(String abbreviation, String name, String teamName, Duration lapTime) {
         this.abbreviation = abbreviation;
+        this.name = name;
+        this.teamName = teamName;
+        this.lapTime = lapTime;
     }
 
     public String getTeamName() {
