@@ -1,4 +1,14 @@
-
+/*
+ * @(#)Racer.java
+ *
+ * This file is a part of the Racer project.
+ * It contains the definition of the Racer class,
+ * which is used as model to transfer data about racers profile and their lap times.
+ *
+ * Author: Vadym Tsudenko
+ *
+ * Date: September 10, 2023
+ */
 package ua.com.foxminded.model;
 
 import java.time.Duration;
