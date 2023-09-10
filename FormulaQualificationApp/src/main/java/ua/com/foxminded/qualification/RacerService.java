@@ -7,8 +7,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -31,19 +29,19 @@ public class RacerService {
                 .collect(Collectors.toList());
             Map<String, LocalDateTime> racersStartLogs = parseLogsToLapTimes(startLogFileName);
             Map<String, LocalDateTime> racersEndLogs = parseLogsToLapTimes(endLogFileName);
-            racers.stream().forEach(racer -> racer.setLapTime(Duration.between(
+            racers.forEach(racer -> racer.setLapTime(Duration.between(
                 racersStartLogs.get(racer.getAbbreviation()),
                 racersEndLogs.get(racer.getAbbreviation()))));
             return racers;
         }
     }
 
-    private Function<String, Racer> setUpPilotProfile = pilotsProfile -> {
+    private final Function<String, Racer> setUpPilotProfile = pilotsProfile -> {
         String[] pilotsProperies = pilotsProfile.split("_");
         return new Racer(pilotsProperies[0], pilotsProperies[1], pilotsProperies[2], null);
     };
 
-    private Consumer<String> validateAbbreviationSource = abbreviation -> {
+    private final Consumer<String> validateAbbreviationSource = abbreviation -> {
         if (!ABBREVIATION_FILE_FORMAT.matcher(abbreviation).matches()) {
             throw new RuntimeException("Invalid abbreviation source!");
         }
@@ -58,7 +56,7 @@ public class RacerService {
         }
     }
 
-    private Consumer<String> validateLogSource = log -> {
+    private final Consumer<String> validateLogSource = log -> {
         if (!LOG_FILE_FORMAT.matcher(log).matches()) {
             throw new RuntimeException("Invalid log source!");
         }
