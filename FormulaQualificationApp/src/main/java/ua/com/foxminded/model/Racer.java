@@ -1,12 +1,13 @@
+
 package ua.com.foxminded.model;
 
 import java.time.Duration;
 
 public class Racer {
 
-    private String teamName;
-    private String name;
-    private String abbreviation;
+    private final String teamName;
+    private final String name;
+    private final String abbreviation;
     private Duration lapTime;
 
     public Racer(String abbreviation, String name, String teamName, Duration lapTime) {

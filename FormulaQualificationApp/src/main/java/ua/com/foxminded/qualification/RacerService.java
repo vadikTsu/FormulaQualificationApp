@@ -1,6 +1,19 @@
+/*
+ * @(#)RaceService.java
+ *
+ * This file is a part of the FormulaFox project.
+ * It contains the definition of the RaceService class,
+ * which is used to parse data from log and abbreviation files to collect race data.
+ *
+ * Author: Vadym Tsudenko
+ *
+ * Date: September 10, 2023
+ */
 package ua.com.foxminded.qualification;
 
-import static java.util.stream.Collectors.toMap;
+import ua.com.foxminded.dao.FileReader;
+import ua.com.foxminded.model.Racer;
+
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -13,8 +26,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import ua.com.foxminded.dao.FileReader;
-import ua.com.foxminded.model.Racer;
+import static java.util.stream.Collectors.toMap;
 
 public class RacerService {
 
@@ -22,17 +34,26 @@ public class RacerService {
     private static final Pattern ABBREVIATION_FILE_FORMAT = Pattern.compile("[A-Z]{3}_[A-Za-z\\s]+_[A-Za-z\\s]+");
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss.SSS");
 
+    /**
+     * Parse start log, end log, abbreviations to set up race data.
+     *
+     * @param startLogFileName      name of file with start logs.
+     * @param endLogFileName        name of file with end logs.
+     * @param abbreviationsFileName name of file with abbreviations.
+     * @return parsed data to list of {@link Racer}
+     * @throws IOException
+     */
     public List<Racer> getRacers(String startLogFileName, String endLogFileName, String abbreviationsFileName)
         throws IOException {
         try (Stream<String> abbreviations = new FileReader().read(abbreviationsFileName)) {
-            List<Racer> racers = abbreviations.peek(validateAbbreviationSource).map(setUpPilotProfile)
-                .collect(Collectors.toList());
             Map<String, LocalDateTime> racersStartLogs = parseLogsToLapTimes(startLogFileName);
             Map<String, LocalDateTime> racersEndLogs = parseLogsToLapTimes(endLogFileName);
-            racers.forEach(racer -> racer.setLapTime(Duration.between(
-                racersStartLogs.get(racer.getAbbreviation()),
-                racersEndLogs.get(racer.getAbbreviation()))));
-            return racers;
+            return abbreviations.peek(validateAbbreviationSource)
+                .map(setUpPilotProfile)
+                .peek(racer -> racer.setLapTime(Duration.between(
+                    racersStartLogs.get(racer.getAbbreviation()),
+                    racersEndLogs.get(racer.getAbbreviation()))))
+                .collect(Collectors.toList());
         }
     }
 
