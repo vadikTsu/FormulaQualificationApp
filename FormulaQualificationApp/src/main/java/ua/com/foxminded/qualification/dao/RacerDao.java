@@ -26,20 +26,6 @@ public class RacerDao {
     private static final Pattern LOG_FILE_FORMAT = Pattern.compile("\\w{3}\\d{4}-\\d{2}-\\d{2}_\\d{2}:\\d{2}:\\d{2}\\.\\d{3}");
     private static final Pattern ABBREVIATION_FILE_FORMAT = Pattern.compile("[A-Z]{3}_[A-Za-z\\s]+_[A-Za-z\\s]+");
     private final ClassLoader classLoader = getClass().getClassLoader();
-    private final Consumer<String> validateAbbreviationSource = abbreviation -> {
-        if (!ABBREVIATION_FILE_FORMAT.matcher(abbreviation).matches()) {
-            throw new RuntimeException("Invalid abbreviation source!");
-        }
-    };
-    private final Consumer<String> validateLogSource = log -> {
-        if (!LOG_FILE_FORMAT.matcher(log).matches()) {
-            throw new RuntimeException("Invalid log source!");
-        }
-    };
-    private final Function<String, Racer> setUpPilotProfile = pilotsProfile -> {
-        String[] pilotsProperies = pilotsProfile.split("_");
-        return new Racer(pilotsProperies[0], pilotsProperies[1], pilotsProperies[2], null);
-    };
 
     /**
      * Parses and validates data from abbreviation source to Racer models.
@@ -78,4 +64,21 @@ public class RacerDao {
             }
         }
     }
+
+    private final Consumer<String> validateAbbreviationSource = abbreviation -> {
+        if (!ABBREVIATION_FILE_FORMAT.matcher(abbreviation).matches()) {
+            throw new RuntimeException("Invalid abbreviation source!");
+        }
+    };
+
+    private final Consumer<String> validateLogSource = log -> {
+        if (!LOG_FILE_FORMAT.matcher(log).matches()) {
+            throw new RuntimeException("Invalid log source!");
+        }
+    };
+
+    private final Function<String, Racer> setUpPilotProfile = pilotsProfile -> {
+        String[] pilotsProperies = pilotsProfile.split("_");
+        return new Racer(pilotsProperies[0], pilotsProperies[1], pilotsProperies[2], null);
+    };
 }
