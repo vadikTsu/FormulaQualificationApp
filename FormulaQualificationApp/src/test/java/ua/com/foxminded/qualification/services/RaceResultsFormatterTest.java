@@ -1,8 +1,9 @@
-package ua.com.foxminded.qualification;
+package ua.com.foxminded.qualification.services;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ua.com.foxminded.model.Racer;
+import ua.com.foxminded.qualification.formatters.RaceFormatter;
+import ua.com.foxminded.qualification.model.Racer;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -12,12 +13,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RaceResultsFormatterTest {
 
-    private RaceResultsFormatter raceResultsFormatter;
+    private RaceFormatter raceResultsFormatter;
     private static final String NEW_LINE = System.lineSeparator();
 
     @BeforeEach
     void setUp() {
-        raceResultsFormatter = new RaceResultsFormatter();
+        raceResultsFormatter = new RaceFormatter();
     }
 
     @Test

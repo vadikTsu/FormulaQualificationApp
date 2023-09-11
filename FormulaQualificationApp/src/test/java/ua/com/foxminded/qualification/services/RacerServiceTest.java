@@ -1,22 +1,24 @@
-package ua.com.foxminded.qualification;
+package ua.com.foxminded.qualification.services;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 class RacerServiceTest {
 
     private RacerService racerService;
-    private String damagedAbbreviations = "damagedAbbreviations.txt";
-    private String damagedStartLog = "damagedEnd.log";
-    private String damagedEndLog = "damagedStart.log";
-    private String validAbbreviations = "validAbbreviations.txt";
-    private String validStartLog = "validStart.log";
-    private String validEndLog = "validEnd.log";
-    private String duplicateLog = "duplicate.log";
+    private final String damagedAbbreviations = "damagedAbbreviations.txt";
+    private final String damagedStartLog = "damagedEnd.log";
+    private final String damagedEndLog = "damagedStart.log";
+    private final String validAbbreviations = "validAbbreviations.txt";
+    private final String validStartLog = "validStart.log";
+    private final String validEndLog = "validEnd.log";
+    private final String duplicateLog = "duplicate.log";
 
     @BeforeEach
     void setUpQualificaionObject() {

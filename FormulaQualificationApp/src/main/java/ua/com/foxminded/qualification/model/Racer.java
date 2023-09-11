@@ -9,7 +9,7 @@
  *
  * Date: September 10, 2023
  */
-package ua.com.foxminded.model;
+package ua.com.foxminded.qualification.model;
 
 import java.time.Duration;
 
