@@ -36,7 +36,7 @@ public class RacerDao {
      */
     public List<Racer> getAbbreviations(String abbreviationFileName) throws IOException {
         try (InputStream inputStream = classLoader.getResourceAsStream(abbreviationFileName)) {
-            if (inputStream == null) throw new FileNotFoundException();
+            if (inputStream == null) throw new FileNotFoundException("No such file: " + abbreviationFileName);
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
                 return reader
                     .lines()

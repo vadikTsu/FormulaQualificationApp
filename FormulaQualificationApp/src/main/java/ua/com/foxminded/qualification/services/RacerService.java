@@ -31,8 +31,8 @@ public class RacerService {
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss.SSS");
     private final RacerDao racerDao;
 
-    public RacerService() {
-        this.racerDao = new RacerDao();
+    public RacerService(RacerDao racerDao) {
+        this.racerDao = racerDao;
     }
 
     /**
@@ -44,8 +44,7 @@ public class RacerService {
      * @param abbreviationsFileName name of file with abbreviations.
      * @return parsed data to list of {@link Racer}
      */
-    public List<Racer> getRacers(String startLogFileName, String endLogFileName, String abbreviationsFileName)
-        throws IOException {
+    public List<Racer> getRacers(String startLogFileName, String endLogFileName, String abbreviationsFileName) throws IOException {
         List<Racer> abbreviations = racerDao.getAbbreviations(abbreviationsFileName);
         Map<String, LocalDateTime> racersStartLogs = parseLogsToLapTimes(startLogFileName);
         Map<String, LocalDateTime> racersEndLogs = parseLogsToLapTimes(endLogFileName);
